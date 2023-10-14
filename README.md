@@ -1,2 +1,5 @@
 # migr-origins
-Dataviz of migrant stocks in DK and SE by their origin countries
+
+Dataviz of foreign-born population stocks in DK and SE
+
+![](/fig-waffle.png)
