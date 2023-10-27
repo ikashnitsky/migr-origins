@@ -142,8 +142,17 @@ waffle_data <- df_counts %>%
     ) %>% 
     arrange(host, year, group)
 
+# HOTFIX waffle data to get rid of the rounding errors
+waffle_data_hotfix <- waffle_data %>% 
+  filter(! x == 41) %>% 
+  bind_rows(
+    tibble(
+      year = 2000, host = "dk", y = 25, x = 40, group = "other", n = 4986
+    )
+  )
+
 # colors
-colors_match <- waffle_data %>%
+colors_match <- waffle_data_hotfix %>%
     group_by(group) %>%
     summarise(tot = n()) %>%
     mutate(group = group %>% as_factor() %>% fct_reorder(tot) %>% fct_rev() %>% fct_relevel("other", after = Inf)) %>%
@@ -192,7 +201,7 @@ one_waffle_please <- function(df){
 }
 
 # produce a list of waffles
-list_waffles <- waffle_data  %>%
+list_waffles <- waffle_data_hotfix  %>%
     group_by(year, host) %>%
     group_map(~ one_waffle_please(.x))
 
@@ -200,7 +209,7 @@ list_waffles <- waffle_data  %>%
 # list_waffles %>% map(print)
 
 # the order of grouping
-waffle_data  %>%
+waffle_data_hotfix  %>%
     distinct(year, host)
 
 # scaling factors
@@ -297,7 +306,7 @@ label_other <- df_counts %>%
         )+
       geom_text(
         data = label_other, aes(label = prop_other %>% round(), x = x, y = y - .02),
-        color = c("#ccffff"), size = 14,
+        color = c("#eeeeee"), size = 14,
         family = "ah", fontface = 2,
         hjust = .5, vjust = 0
       )
